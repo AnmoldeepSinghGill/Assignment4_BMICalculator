@@ -13,7 +13,7 @@ namespace Assignment4_BMICalculator
     public partial class BMICalculator : Form
     {
         //PRIVATE DATA MEMBERS
-        private Label m_activeLabel;
+        private TextBox m_activeTextbox;
 
         // PUBLIC Properties
         public string outputString { get; set; }
@@ -22,27 +22,27 @@ namespace Assignment4_BMICalculator
         public float MetricBMI { get; set; }
         public float ImperialBMI { get; set; }
 
-        public Label ActiveLabel
+        public TextBox ActiveTextbox
         {
             get
             {
-                return m_activeLabel;
+                return m_activeTextbox;
             }
 
             set
             {
                 // check if m_activeLabel is already pointing at a label
-                if (m_activeLabel != null)
+                if (m_activeTextbox != null)
                 {
-                    m_activeLabel.BackColor = Color.White;
+                    m_activeTextbox.BackColor = Color.White;
                 }
 
-                m_activeLabel = value;
+                m_activeTextbox = value;
 
                 // check if m_activeLabel has not been set to null
-                if (m_activeLabel != null)
+                if (m_activeTextbox != null)
                 {
-                    m_activeLabel.BackColor = Color.LightBlue;
+                    m_activeTextbox.BackColor = Color.LightBlue;
                 }
 
             }
@@ -56,8 +56,11 @@ namespace Assignment4_BMICalculator
         {
             this.Size = new Size(320, 480);
             ClearNumericKeyboard();
-            WeightLabel.Text = "0";
+            CalculatedBMITextBox.Enabled = false;
+            ActiveTextbox = null;
         }
+
+        
 
         /// <summary>
         /// This is the shared Event Handler For all of the calculator buttons' Click Event
@@ -88,20 +91,20 @@ namespace Assignment4_BMICalculator
                     }
                 }
 
-                HeightLabel.Text = outputString;
+                ActiveTextbox.Text = outputString;
             }
             else
             {
                 switch (tag)
                 {
                     case "decimal":
-                        addDecimalToResultLabel();
+                        AddDecimal();
                         break;
                     case "done":
-                        NumberButtonTableLayoutPanel.Visible = false;
+                        NumericButtonsTableLayoutPanel.Visible = false;
                         break;
                     case "back":
-                        BackFunction();
+                        BackButtonFunction();
                         break;
                 }
             }
@@ -109,13 +112,14 @@ namespace Assignment4_BMICalculator
 
         private void ClearNumericKeyboard()
         {
-            HeightLabel.Text = "0";
+            HeightTextbox.Text = "";
+            WeightTextbox.Text = "";
             outputString = "0";
             decimalExists = false;
             outputValue = 0.0f;
         }
 
-        private void addDecimalToResultLabel()
+        private void AddDecimal()
         {
             if (!decimalExists)
             {
@@ -127,7 +131,7 @@ namespace Assignment4_BMICalculator
         /// <summary>
         /// Clears the last character in the label
         /// </summary>
-        private void BackFunction()
+        private void BackButtonFunction()
         {
             var lastChar = outputString.Substring(outputString.Length - 1);
             if (lastChar == ".")
@@ -141,54 +145,127 @@ namespace Assignment4_BMICalculator
                 outputString = "0";
             }
 
-            HeightLabel.Text = outputString;
+            ActiveTextbox.Text = outputString;
         }
 
+        /// <summary>
+        /// This is an Event handler For Calculate BMI click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CalculateBMIButton_Click(object sender, EventArgs e)
         {
-            float weight = float.Parse(WeightLabel.Text);
-            float height = float.Parse(HeightLabel.Text);
+            if(!(float.TryParse(WeightTextbox.Text, out float weight)))
+            {
+                weight = 0f;
+            }
+            if (!(float.TryParse(HeightTextbox.Text, out float height)))
+            {
+                height = 0f;
+            }
             float BMI;
             if(ImperialRadioButton.Checked == true)
             {
                 BMI = (weight * 703) / (height * height);
-                CalculatedBMILabel.Text = BMI.ToString();
+                CalculatedBMITextBox.Text = BMI.ToString();
+                CalculatedBMITextBox.BackColor = Color.White;
             }
             else if(MetricRadioButton.Checked == true)
             {
-                BMI = (weight * 10000) / (height * height);
-                CalculatedBMILabel.Text = BMI.ToString();
-            }     
+                BMI = weight / (height * height);
+                CalculatedBMITextBox.Text = BMI.ToString();
+                CalculatedBMITextBox.BackColor = Color.White;
+            }
+
+            ShowBMIResult();
         }
 
+        private void ResetButton_Click(object sender, EventArgs e)
+        {
+            WeightTextbox.Text = "";
+            HeightTextbox.Text = "";
+            MetricRadioButton.Checked = false;
+            ImperialRadioButton.Checked = true;
+            CalculatedBMITextBox.Text = "";
+            BMITextResult.Text = "";
+        }
+
+        private void MetricRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            MetreLabel.Text = "m";
+            KilogramLabel.Text = "Kg";
+        }
+
+        private void ImperialRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            MetreLabel.Text = "In";
+            KilogramLabel.Text = "Lb";
+        }
         /// <summary>
         /// This is the event handler for the HeightLabel click event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        //private void ActiveLabel_Click(object sender, EventArgs e)
-        //{
+        private void ActiveTextbox_Click(object sender, EventArgs e)
+        {
 
-        //    if (ActiveLabel != null)
-        //    {
-        //        ClearNumericKeyboard();
-        //    }
+            ActiveTextbox = sender as TextBox;
+            ActiveTextbox.BackColor = Color.LightBlue;
 
-        //    ActiveLabel = sender as Label;
-        //    ActiveLabel.BackColor = Color.LightBlue;
 
-        //    //AnimationTimer.Enabled = true;
+            //AnimationTimer.Enabled = true;
 
-        //    //NumberButtonTableLayoutPanel.Location = new Point(12, ActiveLabel.Location.Y + 55);
-        //    NumberButtonTableLayoutPanel.BringToFront();
+            NumericButtonsTableLayoutPanel.BringToFront();
 
-        //    if (ActiveLabel.Text != "0")
-        //    {
-        //        outputString = ActiveLabel.Text;
-        //        HeightLabel.Text = ActiveLabel.Text;
-        //    }
+            if (ActiveTextbox.Text != "0")
+            {
+                outputString = ActiveTextbox.Text;
+            }
 
-        //    NumberButtonTableLayoutPanel.Visible = true;
-        //}
+            NumericButtonsTableLayoutPanel.Visible = true;
+            NumericButtonsTableLayoutPanel.Location = new Point(4, ActiveTextbox.Location.Y + 55);
+        }
+
+        private void AnimationTimer_Tick(object sender, EventArgs e)
+        {
+            var Location = NumericButtonsTableLayoutPanel.Location;
+            NumericButtonsTableLayoutPanel.Location = new Point(Location.X, Location.Y - 20);
+
+            if (NumericButtonsTableLayoutPanel.Location.Y <= ActiveTextbox.Location.Y + 55)
+            {
+                AnimationTimer.Enabled = false;
+                if (NumericButtonsTableLayoutPanel.Location.Y <= ActiveTextbox.Location.Y + 55)
+                {
+                    NumericButtonsTableLayoutPanel.Location = new Point(Location.X, Location.Y + 55);
+                }
+
+            }
+
+        }
+
+        private void ShowBMIResult()
+        {
+            float BMICalculated = float.Parse(CalculatedBMITextBox.Text);
+            if (BMICalculated < 18.5)
+            {
+                BMITextResult.Text = "UnderWeight";
+            }
+            else if (BMICalculated >= 18.5 && BMICalculated <= 24.9)
+            {
+                BMITextResult.Text = "Normal";
+            }
+            else if (BMICalculated >= 25 && BMICalculated <= 29.9)
+            {
+                BMITextResult.Text = "Overweight";
+            }
+            else if (BMICalculated > 30)
+            {
+                BMITextResult.Text = "Obese";
+            }
+            else
+            {
+                BMITextResult.Text = "Please enter valid Height and Weight";
+            }
+        }
     }
 }
