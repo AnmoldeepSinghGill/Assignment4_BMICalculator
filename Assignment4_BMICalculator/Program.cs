@@ -6,8 +6,11 @@ using System.Windows.Forms;
 
 namespace Assignment4_BMICalculator
 {
-    static class Program
+    public static class Program
     {
+        public static BMICalculator bmiCalculator;
+        public static SplashScreen splashScreen;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -16,7 +19,9 @@ namespace Assignment4_BMICalculator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BMICalculator());
+            bmiCalculator = new BMICalculator();
+            splashScreen = new SplashScreen();
+            Application.Run(splashScreen);
         }
     }
 }
