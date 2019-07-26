@@ -13,36 +13,34 @@ namespace Assignment4_BMICalculator
     public partial class BMICalculator : Form
     {
         //PRIVATE DATA MEMBERS
-        private TextBox m_activeTextbox;
+        private TextBox _activeTextbox;
 
         // PUBLIC Properties
-        public string outputString { get; set; }
-        public float outputValue { get; set; }
-        public bool decimalExists { get; set; }
         public float MetricBMI { get; set; }
         public float ImperialBMI { get; set; }
+        public string stringOutput { get; set; }
 
         public TextBox ActiveTextbox
         {
             get
             {
-                return m_activeTextbox;
+                return _activeTextbox;
             }
 
             set
             {
-                // check if m_activeLabel is already pointing at a label
-                if (m_activeTextbox != null)
+                // check if _activeTextbox is already pointing at a label
+                if (_activeTextbox != null)
                 {
-                    m_activeTextbox.BackColor = Color.White;
+                    _activeTextbox.BackColor = Color.White;
                 }
 
-                m_activeTextbox = value;
+                _activeTextbox = value;
 
-                // check if m_activeLabel has not been set to null
-                if (m_activeTextbox != null)
+                // check if _activeTextbox has not been set to null
+                if (_activeTextbox != null)
                 {
-                    m_activeTextbox.BackColor = Color.LightBlue;
+                    _activeTextbox.BackColor = Color.LightBlue;
                 }
 
             }
@@ -52,6 +50,11 @@ namespace Assignment4_BMICalculator
             InitializeComponent();
         }
 
+        /// <summary>
+        /// This is the Load Event for BMI Calculator Form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BMICalculator_Load(object sender, EventArgs e)
         {
             this.Size = new Size(320, 480);
@@ -62,10 +65,106 @@ namespace Assignment4_BMICalculator
             BMITextResult.Multiline = true;
         }
 
-        
+        /// <summary>
+        /// This is an Event handler For Calculate BMI click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CalculateBMIButton_Click(object sender, EventArgs e)
+        {
+            if (!(float.TryParse(WeightTextbox.Text, out float weight)))
+            {
+                weight = 0f;
+            }
+            if (!(float.TryParse(HeightTextbox.Text, out float height)))
+            {
+                height = 0f;
+            }
+            float BMI;
+            if (ImperialRadioButton.Checked == true)
+            {
+                BMI = (weight * 703) / (height * height);
+                CalculatedBMITextBox.Text = BMI.ToString();
+                CalculatedBMITextBox.BackColor = Color.White;
+            }
+            else if (MetricRadioButton.Checked == true)
+            {
+                BMI = weight / (height * height);
+                CalculatedBMITextBox.Text = BMI.ToString();
+                CalculatedBMITextBox.BackColor = Color.White;
+            }
+
+            ShowBMITextResult();
+        }
 
         /// <summary>
-        /// This is the shared Event Handler For all of the calculator buttons' Click Event
+        /// This function shows the user's BMI numerical result as a text result according to BMI scale
+        /// </summary>
+        private void ShowBMITextResult()
+        {
+            float BMICalculated = float.Parse(CalculatedBMITextBox.Text);
+            if (BMICalculated < 18.5)
+            {
+                BMITextResult.Text = "UnderWeight";
+                BMITextResult.BackColor = Color.Yellow;
+                BMITextResult.ForeColor = Color.Red;
+                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
+                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+            }
+            else if (BMICalculated >= 18.5 && BMICalculated <= 24.9)
+            {
+                BMITextResult.Text = "Normal";
+                BMITextResult.BackColor = Color.Lime;
+                BMITextResult.ForeColor = Color.White;
+                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
+                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+            }
+            else if (BMICalculated > 24.9 && BMICalculated <= 29.9)
+            {
+                BMITextResult.Text = "Overweight";
+                BMITextResult.BackColor = Color.Red;
+                BMITextResult.ForeColor = Color.Yellow;
+                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
+                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+            }
+            else if (BMICalculated > 30)
+            {
+                BMITextResult.Text = "Obese";
+                BMITextResult.BackColor = Color.Crimson;
+                BMITextResult.ForeColor = Color.White;
+                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
+                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+            }
+            else
+            {
+                BMITextResult.Text = "Please enter valid Height and Weight";
+            }
+        }
+
+        /// <summary>
+        /// This checks if the metric button is checked and changes the UnitLabels
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetricRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            HeightUnitLabel.Text = "m";
+            WeightUnitLabel.Text = "Kg";
+        }
+
+        /// <summary>
+        /// This checks if the Imperial Button is checked and changes the UnitLabels
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ImperialRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            HeightUnitLabel.Text = "in";
+            WeightUnitLabel.Text = "Lb";
+        }
+
+        /// <summary>
+        /// This is the shared Event Handler For all of the calculator buttons's Click Event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -79,21 +178,20 @@ namespace Assignment4_BMICalculator
 
             if (numericResult)
             {
-                int maxSize = (decimalExists) ? 5 : 3;
 
-                if (outputString == "0")
+                if (stringOutput == "0")
                 {
-                    outputString = tag;
+                    stringOutput = tag;
                 }
                 else
                 {
-                    if (outputString.Length < maxSize)
+                    if (stringOutput.Length < 5)
                     {
-                        outputString += tag;
+                        stringOutput += tag;
                     }
                 }
 
-                ActiveTextbox.Text = outputString;
+                ActiveTextbox.Text = stringOutput;
             }
             else
             {
@@ -125,21 +223,25 @@ namespace Assignment4_BMICalculator
             ActiveTextbox = null;
         }
 
+        /// <summary>
+        /// This Function Sets the Default values for all the Controls
+        /// </summary>
         private void SetDefaultvalues()
         {
             HeightTextbox.Text = "";
             WeightTextbox.Text = "";
-            outputString = "0";
-            decimalExists = false;
-            outputValue = 0.0f;
+            stringOutput = "0";
         }
 
         private void AddDecimal()
         {
-            if (!decimalExists)
+            if (stringOutput.IndexOf('.') == -1)
             {
-                outputString += ".";
-                decimalExists = true;
+                if (stringOutput == "")
+                {
+                    stringOutput += "0";
+                }
+                stringOutput += ".";
             }
         }
 
@@ -148,51 +250,18 @@ namespace Assignment4_BMICalculator
         /// </summary>
         private void BackButtonFunction()
         {
-            var lastChar = outputString.Substring(outputString.Length - 1);
-            if (lastChar == ".")
-            {
-                decimalExists = false;
-            }
-            outputString = outputString.Remove(outputString.Length - 1);
+            var lastChar = stringOutput.Substring(stringOutput.Length - 1);
 
-            if (outputString.Length == 0)
-            {
-                outputString = "0";
-            }
+            //to remove Last item of the Output String
+            stringOutput = stringOutput.Remove(stringOutput.Length - 1);
 
-            ActiveTextbox.Text = outputString;
-        }
-
-        /// <summary>
-        /// This is an Event handler For Calculate BMI click event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CalculateBMIButton_Click(object sender, EventArgs e)
-        {
-            if(!(float.TryParse(WeightTextbox.Text, out float weight)))
+            //Checks if the Output String is already 0
+            if (stringOutput.Length == 0)
             {
-                weight = 0f;
-            }
-            if (!(float.TryParse(HeightTextbox.Text, out float height)))
-            {
-                height = 0f;
-            }
-            float BMI;
-            if(ImperialRadioButton.Checked == true)
-            {
-                BMI = (weight * 703) / (height * height);
-                CalculatedBMITextBox.Text = BMI.ToString();
-                CalculatedBMITextBox.BackColor = Color.White;
-            }
-            else if(MetricRadioButton.Checked == true)
-            {
-                BMI = weight / (height * height);
-                CalculatedBMITextBox.Text = BMI.ToString();
-                CalculatedBMITextBox.BackColor = Color.White;
+                stringOutput = "0";
             }
 
-            ShowBMITextResult();
+            ActiveTextbox.Text = stringOutput;
         }
 
         /// <summary>
@@ -209,28 +278,6 @@ namespace Assignment4_BMICalculator
             CalculatedBMITextBox.Text = "";
             BMITextResult.Text = "";
             BMITextResult.BackColor = Color.White;
-        }
-
-        /// <summary>
-        /// This checks if the metric button is checked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MetricRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            MetreLabel.Text = "m";
-            KilogramLabel.Text = "Kg";
-        }
-
-        /// <summary>
-        /// This checks if the Imperial Button is checked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ImperialRadioButton_CheckedChanged(object sender, EventArgs e)
-        {
-            MetreLabel.Text = "in";
-            KilogramLabel.Text = "Lb";
         }
 
         /// <summary>
@@ -251,7 +298,7 @@ namespace Assignment4_BMICalculator
 
             if (ActiveTextbox.Text != "0")
             {
-                outputString = ActiveTextbox.Text;
+                stringOutput = ActiveTextbox.Text;
             }
 
             NumericButtonsTableLayoutPanel.Visible = true;
@@ -277,42 +324,6 @@ namespace Assignment4_BMICalculator
                 }
             }
 
-        }
-
-        /// <summary>
-        /// This function shows the user's BMI numerical result as a text result according to BMI scale
-        /// </summary>
-        private void ShowBMITextResult()
-        {
-            float BMICalculated = float.Parse(CalculatedBMITextBox.Text);
-            if (BMICalculated < 18.5)
-            {
-                BMITextResult.Text = "UnderWeight";
-                BMITextResult.BackColor = Color.Yellow;
-                BMITextResult.ForeColor = Color.Red;
-            }
-            else if (BMICalculated >= 18.5 && BMICalculated <= 24.9)
-            {
-                BMITextResult.Text = "Normal";
-                BMITextResult.BackColor = Color.Lime;
-                BMITextResult.ForeColor = Color.White;
-            }
-            else if (BMICalculated > 24.9 && BMICalculated <= 29.9)
-            {
-                BMITextResult.Text = "Overweight";
-                BMITextResult.BackColor = Color.Red;
-                BMITextResult.ForeColor = Color.Yellow;
-            }
-            else if (BMICalculated > 30)
-            {
-                BMITextResult.Text = "Obese";
-                BMITextResult.BackColor = Color.Crimson;
-                BMITextResult.ForeColor = Color.White;
-            }
-            else
-            {
-                BMITextResult.Text = "Please enter valid Height and Weight";
-            }
         }
 
         /// <summary>

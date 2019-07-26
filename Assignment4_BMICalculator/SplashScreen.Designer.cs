@@ -37,12 +37,13 @@
             this.Dot2Label = new System.Windows.Forms.Label();
             this.Dot1Timer = new System.Windows.Forms.Timer(this.components);
             this.Dot2Timer = new System.Windows.Forms.Timer(this.components);
+            this.WelcomeToLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // WelcomeLabel
             // 
             this.WelcomeLabel.AutoSize = true;
-            this.WelcomeLabel.Location = new System.Drawing.Point(50, 24);
+            this.WelcomeLabel.Location = new System.Drawing.Point(43, 66);
             this.WelcomeLabel.Name = "WelcomeLabel";
             this.WelcomeLabel.Size = new System.Drawing.Size(208, 31);
             this.WelcomeLabel.TabIndex = 0;
@@ -56,10 +57,10 @@
             // LoadingLabel
             // 
             this.LoadingLabel.AutoSize = true;
-            this.LoadingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.LoadingLabel.Location = new System.Drawing.Point(12, 405);
+            this.LoadingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            this.LoadingLabel.Location = new System.Drawing.Point(12, 392);
             this.LoadingLabel.Name = "LoadingLabel";
-            this.LoadingLabel.Size = new System.Drawing.Size(88, 17);
+            this.LoadingLabel.Size = new System.Drawing.Size(135, 26);
             this.LoadingLabel.TabIndex = 1;
             this.LoadingLabel.Text = "LoadingFiles";
             // 
@@ -71,20 +72,20 @@
             // Dot1Label
             // 
             this.Dot1Label.AutoSize = true;
-            this.Dot1Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.Dot1Label.Location = new System.Drawing.Point(97, 405);
+            this.Dot1Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            this.Dot1Label.Location = new System.Drawing.Point(140, 392);
             this.Dot1Label.Name = "Dot1Label";
-            this.Dot1Label.Size = new System.Drawing.Size(12, 17);
+            this.Dot1Label.Size = new System.Drawing.Size(18, 26);
             this.Dot1Label.TabIndex = 1;
             this.Dot1Label.Text = ".";
             // 
             // Dot2Label
             // 
             this.Dot2Label.AutoSize = true;
-            this.Dot2Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.Dot2Label.Location = new System.Drawing.Point(106, 405);
+            this.Dot2Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            this.Dot2Label.Location = new System.Drawing.Point(153, 392);
             this.Dot2Label.Name = "Dot2Label";
-            this.Dot2Label.Size = new System.Drawing.Size(12, 17);
+            this.Dot2Label.Size = new System.Drawing.Size(18, 26);
             this.Dot2Label.TabIndex = 1;
             this.Dot2Label.Text = ".";
             // 
@@ -98,6 +99,15 @@
             this.Dot2Timer.Interval = 2500;
             this.Dot2Timer.Tick += new System.EventHandler(this.Dot2Timer_Tick);
             // 
+            // WelcomeToLabel
+            // 
+            this.WelcomeToLabel.AutoSize = true;
+            this.WelcomeToLabel.Location = new System.Drawing.Point(62, 26);
+            this.WelcomeToLabel.Name = "WelcomeToLabel";
+            this.WelcomeToLabel.Size = new System.Drawing.Size(165, 31);
+            this.WelcomeToLabel.TabIndex = 0;
+            this.WelcomeToLabel.Text = "Welcome To";
+            // 
             // SplashScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
@@ -106,6 +116,7 @@
             this.Controls.Add(this.Dot2Label);
             this.Controls.Add(this.Dot1Label);
             this.Controls.Add(this.LoadingLabel);
+            this.Controls.Add(this.WelcomeToLabel);
             this.Controls.Add(this.WelcomeLabel);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -130,5 +141,6 @@
         private System.Windows.Forms.Label Dot2Label;
         private System.Windows.Forms.Timer Dot1Timer;
         private System.Windows.Forms.Timer Dot2Timer;
+        private System.Windows.Forms.Label WelcomeToLabel;
     }
 }
