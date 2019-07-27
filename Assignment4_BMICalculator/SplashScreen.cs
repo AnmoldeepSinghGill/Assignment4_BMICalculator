@@ -8,6 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+/*-------------------------------------------------------------------------------------------------
+ * Author: Anmoldeep Singh Gill
+ * 
+ * Student Number: 301044883
+ * 
+ * Create Date: 25 Jul, 2019
+ * 
+ * Description: This project initialise a splash screen thet is displayed for 3 sec
+ * before the BMI Calculator Form is Displayed.
+ * 
+ * Revision History: Final Version (With all functionality)
+ * -------------------------------------------------------------------------------------------------
+ */
+
 namespace Assignment4_BMICalculator
 {
     public partial class SplashScreen : Form

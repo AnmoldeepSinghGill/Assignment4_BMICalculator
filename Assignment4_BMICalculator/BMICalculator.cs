@@ -8,6 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+/*-------------------------------------------------------------------------------------------------
+ * Author: Anmoldeep Singh Gill
+ * 
+ * Student Number: 301044883
+ * 
+ * Create Date: 14 Jul, 2019
+ * 
+ * Description: This project initialise a BMI Calculator Form which calculates
+ * the User's Body Mass Ratio (BMI) using their Height and weight in both metric
+ * and imperial units.
+ * 
+ * Revision History: Final Version (With all functionality)
+ * -------------------------------------------------------------------------------------------------
+ */
 namespace Assignment4_BMICalculator
 {
     public partial class BMICalculator : Form
@@ -66,6 +80,17 @@ namespace Assignment4_BMICalculator
         }
 
         /// <summary>
+        /// This is a click event for the BMICalculator Form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BMICalculator_Click(object sender, EventArgs e)
+        {
+            NumericButtonsTableLayoutPanel.Visible = false;
+            ActiveTextbox = null;
+        }
+
+        /// <summary>
         /// This is an Event handler For Calculate BMI click event
         /// </summary>
         /// <param name="sender"></param>
@@ -84,13 +109,17 @@ namespace Assignment4_BMICalculator
             if (ImperialRadioButton.Checked == true)
             {
                 BMI = (weight * 703) / (height * height);
-                CalculatedBMITextBox.Text = BMI.ToString();
+                double BMIdoub = Convert.ToDouble(BMI);
+                double result = Math.Round(BMIdoub, 2);
+                CalculatedBMITextBox.Text = result.ToString();
                 CalculatedBMITextBox.BackColor = Color.White;
             }
             else if (MetricRadioButton.Checked == true)
             {
                 BMI = weight / (height * height);
-                CalculatedBMITextBox.Text = BMI.ToString();
+                double BMIdoub = Convert.ToDouble(BMI);
+                double result = Math.Round(BMIdoub, 2);
+                CalculatedBMITextBox.Text = result.ToString();
                 CalculatedBMITextBox.BackColor = Color.White;
             }
 
@@ -103,37 +132,41 @@ namespace Assignment4_BMICalculator
         private void ShowBMITextResult()
         {
             float BMICalculated = float.Parse(CalculatedBMITextBox.Text);
+            int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
+
+            //Checks if the BMIProgressBar valu is not over than 100
+            if (BMICalculatedProgressBar >= 100)
+            {
+                BMICalculatedProgressBar = 100;
+            }
+
             if (BMICalculated < 18.5)
             {
-                BMITextResult.Text = "UnderWeight";
+                BMITextResult.Text = "You are UnderWeight";
                 BMITextResult.BackColor = Color.Yellow;
                 BMITextResult.ForeColor = Color.Red;
-                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
-                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+                BMIResultProgressBar.Value = BMICalculatedProgressBar;
             }
             else if (BMICalculated >= 18.5 && BMICalculated <= 24.9)
             {
-                BMITextResult.Text = "Normal";
+                BMITextResult.Text = "You are Normal";
                 BMITextResult.BackColor = Color.Lime;
                 BMITextResult.ForeColor = Color.White;
-                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
-                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+                BMIResultProgressBar.Value = BMICalculatedProgressBar;
             }
             else if (BMICalculated > 24.9 && BMICalculated <= 29.9)
             {
-                BMITextResult.Text = "Overweight";
+                BMITextResult.Text = "You are Overweight";
                 BMITextResult.BackColor = Color.Red;
                 BMITextResult.ForeColor = Color.Yellow;
-                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
-                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+                BMIResultProgressBar.Value = BMICalculatedProgressBar;
             }
             else if (BMICalculated > 30)
             {
-                BMITextResult.Text = "Obese";
+                BMITextResult.Text = "You are Obese";
                 BMITextResult.BackColor = Color.Crimson;
                 BMITextResult.ForeColor = Color.White;
-                int BMICalculatedProgressBar = Convert.ToInt32(BMICalculated);
-                BMIResultProgressBar.Increment(BMICalculatedProgressBar);
+                BMIResultProgressBar.Value = BMICalculatedProgressBar;
             }
             else
             {
@@ -173,24 +206,23 @@ namespace Assignment4_BMICalculator
             Button TheButton = sender as Button;
             var tag = TheButton.Tag.ToString();
             int numericValue = 0;
+            int size = ((stringOutput.IndexOf('.') == -1) ? 3 : 5);
 
             bool numericResult = int.TryParse(tag, out numericValue);
 
             if (numericResult)
             {
-
                 if (stringOutput == "0")
                 {
                     stringOutput = tag;
                 }
                 else
                 {
-                    if (stringOutput.Length < 5)
+                    if (stringOutput.Length < size)
                     {
                         stringOutput += tag;
                     }
                 }
-
                 ActiveTextbox.Text = stringOutput;
             }
             else
@@ -206,7 +238,8 @@ namespace Assignment4_BMICalculator
                     case "back":
                         BackButtonFunction();
                         break;
-                    case "clear":
+                    case "allClear":
+                        stringOutput = "0";
                         ActiveTextbox.Text = "0";
                         break;
                 }
@@ -233,6 +266,9 @@ namespace Assignment4_BMICalculator
             stringOutput = "0";
         }
 
+        /// <summary>
+        /// This method adds decimal value to the ActiveTextbox
+        /// </summary>
         private void AddDecimal()
         {
             if (stringOutput.IndexOf('.') == -1)
@@ -278,6 +314,7 @@ namespace Assignment4_BMICalculator
             CalculatedBMITextBox.Text = "";
             BMITextResult.Text = "";
             BMITextResult.BackColor = Color.White;
+            BMIResultProgressBar.Value = 0;
         }
 
         /// <summary>
@@ -287,6 +324,10 @@ namespace Assignment4_BMICalculator
         /// <param name="e"></param>
         private void ActiveTextbox_Click(object sender, EventArgs e)
         {
+            if (ActiveTextbox != null)
+            {
+                stringOutput = "0";
+            }
 
             ActiveTextbox = sender as TextBox;
             ActiveTextbox.BackColor = Color.LightBlue;
@@ -297,6 +338,10 @@ namespace Assignment4_BMICalculator
             NumericButtonsTableLayoutPanel.BringToFront();
 
             if (ActiveTextbox.Text != "0")
+            {
+                stringOutput = ActiveTextbox.Text;
+            }
+            if(ActiveTextbox.Text == "0")
             {
                 stringOutput = ActiveTextbox.Text;
             }
@@ -313,7 +358,7 @@ namespace Assignment4_BMICalculator
         private void AnimationTimer_Tick(object sender, EventArgs e)
         {
             var currentLocation = NumericButtonsTableLayoutPanel.Location;
-            NumericButtonsTableLayoutPanel.Location = new Point(currentLocation.X, currentLocation.Y - 18);
+            NumericButtonsTableLayoutPanel.Location = new Point(currentLocation.X, currentLocation.Y - 20);
 
             if (NumericButtonsTableLayoutPanel.Location.Y <= ActiveTextbox.Location.Y + 55)
             {
@@ -323,18 +368,6 @@ namespace Assignment4_BMICalculator
                     NumericButtonsTableLayoutPanel.Location = new Point(currentLocation.X, ActiveTextbox.Location.Y + 55);
                 }
             }
-
-        }
-
-        /// <summary>
-        /// This is a click event for the BMICalculator Form
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BMICalculator_Click(object sender, EventArgs e)
-        {
-            NumericButtonsTableLayoutPanel.Visible = false;
-            ActiveTextbox = null;
         }
 
         /// <summary>
